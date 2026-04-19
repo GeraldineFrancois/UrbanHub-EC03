@@ -5,6 +5,10 @@ on:
     branches: [main, develop, feature/*]
   pull_request:
 
+defaults:
+  run:
+    working-directory: ms-analyse-trafic
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -23,7 +27,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --no-root
 
       - name: Run tests
         run: poetry run pytest
@@ -36,4 +40,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t ms-analyse-trafic:latest .
+        run: docker build -t ms-analyse-trafic:latest ms-analyse-trafic
