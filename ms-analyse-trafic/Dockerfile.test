@@ -1,0 +1,18 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+ENV POETRY_REQUESTS_TIMEOUT=600 \
+    POETRY_NO_INTERACTION=1
+
+RUN pip install --no-cache-dir poetry
+
+COPY pyproject.toml poetry.lock ./
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-root --no-interaction
+
+COPY . .
+
+RUN poetry install --only-root --no-interaction
+
+CMD ["poetry", "run", "pytest", "-v", "--cov=src", "--cov-report=term-missing", "--cov-report=html", "--cov-fail-under=80"]
