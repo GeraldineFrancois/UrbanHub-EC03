@@ -11,6 +11,7 @@ services:
       - ms-auth/.env
     networks:
       - urbanhub-net
+      
 
   ms-user:
     image: ghcr.io/lee-rudy/ec03_urbanhub/ms-user:latest
