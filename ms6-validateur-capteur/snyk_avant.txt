@@ -1,0 +1,43 @@
+
+Testing /Users/geraldinefrancois/code/GeraldineFrancois/UrbanHub-EC03/ec03_urbanhub/ms6-validateur-capteur...
+
+Tested 25 dependencies for known issues, found 9 issues, 10 vulnerable paths.
+
+
+Issues to fix by upgrading dependencies:
+
+  Upgrade requests@2.25.0 to requests@2.33.0 to fix
+  ✗ Insertion of Sensitive Information Into Sent Data [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-REQUESTS-10305723] in requests@2.25.0
+    introduced by requests@2.25.0
+  ✗ Insecure Temporary File [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-REQUESTS-15763443] in requests@2.25.0
+    introduced by requests@2.25.0
+  ✗ Information Exposure [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-REQUESTS-5595532] in requests@2.25.0
+    introduced by requests@2.25.0
+  ✗ Always-Incorrect Control Flow Implementation [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-REQUESTS-6928867] in requests@2.25.0
+    introduced by requests@2.25.0
+
+  Pin idna@2.10 to idna@3.7 to fix
+  ✗ Resource Exhaustion [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-IDNA-6597975] in idna@2.10
+    introduced by requests@2.25.0 > idna@2.10 and 1 other path(s)
+
+  Pin urllib3@1.26.20 to urllib3@2.6.3 to fix
+  ✗ Open Redirect [Medium Severity][https://security.snyk.io/vuln/SNYK-PYTHON-URLLIB3-10390194] in urllib3@1.26.20
+    introduced by requests@2.25.0 > urllib3@1.26.20
+  ✗ Improper Handling of Highly Compressed Data (Data Amplification) [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-URLLIB3-14192442] in urllib3@1.26.20
+    introduced by requests@2.25.0 > urllib3@1.26.20
+  ✗ Allocation of Resources Without Limits or Throttling [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-URLLIB3-14192443] in urllib3@1.26.20
+    introduced by requests@2.25.0 > urllib3@1.26.20
+  ✗ Improper Handling of Highly Compressed Data (Data Amplification) [High Severity][https://security.snyk.io/vuln/SNYK-PYTHON-URLLIB3-14896210] in urllib3@1.26.20
+    introduced by requests@2.25.0 > urllib3@1.26.20
+
+
+
+Organization:      geraldinefrancois
+Package manager:   poetry
+Target file:       pyproject.toml
+Project name:      ms6-validateur
+Open source:       no
+Project path:      /Users/geraldinefrancois/code/GeraldineFrancois/UrbanHub-EC03/ec03_urbanhub/ms6-validateur-capteur
+Licenses:          enabled
+
+
