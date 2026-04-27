@@ -93,6 +93,12 @@ jobs:
           name: flake8-report
           path: ms6-validateur-capteur/flake8_output.txt
 
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: ms6-validateur-capteur/
+
       - name: SonarCloud scan
         if: ${{ secrets.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarcloud-github-action@v3
