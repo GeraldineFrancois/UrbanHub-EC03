@@ -1,0 +1,184 @@
+name: CI - MS6 Validateur Capteur
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'ms6-validateur-capteur/**'
+      - '.github/workflows/ms6-validateur.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'ms6-validateur-capteur/**'
+      - '.github/workflows/ms6-validateur.yml'
+
+env:
+  IMAGE: ghcr.io/geraldinefrancois/urbanhub/ms6-validateur
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # ÉTAPE 1 — TESTS
+  # ─────────────────────────────────────────────
+  test:
+    name: Tests & Coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ms6-validateur-capteur
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Run tests with coverage
+        run: |
+          poetry run pytest tests/ -v \
+            --cov=src \
+            --cov-report=xml \
+            --cov-report=term
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ms6-validateur-capteur/coverage.xml
+
+  # ─────────────────────────────────────────────
+  # ÉTAPE 2 — QUALITÉ
+  # ─────────────────────────────────────────────
+  quality:
+    name: Quality & Security
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: ms6-validateur-capteur
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Flake8 lint
+        continue-on-error: true
+        run: |
+          pip install flake8
+          flake8 src/ tests/ | tee flake8_output.txt
+
+      - name: Upload flake8 report
+        uses: actions/upload-artifact@v4
+        with:
+          name: flake8-report
+          path: ms6-validateur-capteur/flake8_output.txt
+
+      - name: SonarCloud scan
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarcloud-github-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ms6-validateur-capteur
+
+      - name: Snyk security scan
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          npm install -g snyk
+          snyk test --file=poetry.lock --package-manager=poetry | tee snyk_report.txt
+
+      - name: Upload Snyk report
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-report
+          path: ms6-validateur-capteur/snyk_report.txt
+
+  # ─────────────────────────────────────────────
+  # ÉTAPE 3 — BUILD DOCKER
+  # ─────────────────────────────────────────────
+  build:
+    name: Build & Push Docker
+    runs-on: ubuntu-latest
+    needs: quality
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ env.IMAGE }}:${{ github.sha }} \
+            -t ${{ env.IMAGE }}:latest \
+            ms6-validateur-capteur/
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.IMAGE }}:${{ github.sha }}
+          docker push ${{ env.IMAGE }}:latest
+
+  # ─────────────────────────────────────────────
+  # ÉTAPE 4 — DEPLOY STAGING (smoke test)
+  # ─────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy & Smoke Test Staging
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      packages: read
+
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Start container
+        run: |
+          docker run -d \
+            --name ms6-staging \
+            -p 8000:8000 \
+            ${{ env.IMAGE }}:${{ github.sha }}
+
+      - name: Wait for startup
+        run: sleep 2
+
+      - name: Health check
+        run: curl -f http://localhost:8000/health
+
+      - name: Stop container
+        if: always()
+        run: docker stop ms6-staging
