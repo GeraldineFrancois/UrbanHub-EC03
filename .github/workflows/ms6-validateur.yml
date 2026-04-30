@@ -176,14 +176,14 @@ jobs:
         run: |
           docker run -d \
             --name ms6-staging \
-            -p 8000:8000 \
+            -p 8006:8006 \
             ${{ env.IMAGE }}:${{ github.sha }}
 
       - name: Wait for startup
         run: sleep 2
 
       - name: Health check
-        run: curl -f http://localhost:8000/health
+        run: curl -f http://localhost:8006/health
 
       - name: Stop container
         if: always()

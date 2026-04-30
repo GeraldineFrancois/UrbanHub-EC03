@@ -55,6 +55,14 @@ services:
     networks:
       - urbanhub-net
 
+  ms6-validateur:
+    image: ghcr.io/geraldinefrancois/urbanhub/ms6-validateur:latest
+    container_name: ms6-validateur
+    ports:
+      - "8006:8006"
+    networks:
+      - urbanhub-net
+
   mqtt-broker:
     image: eclipse-mosquitto:2.0
     container_name: mqtt-broker

@@ -1,0 +1,63 @@
+RAPPORT DE VALIDATION - MS6 VALIDATEUR CAPTEUR
+Date: 2026-04-27
+
+=======================================================
+ETAT INITIAL
+=======================================================
+
+TESTS (pytest + coverage.py)
+  Tests passes   : 11/11
+  Coverage       : 71%
+
+SECURITE (Snyk)
+  Vulnerabilites : 9
+  CVE identifies :
+    - requests@2.25.0  : 4x Medium
+    - urllib3@1.26.20  : 3x High
+    - idna@2.10        : 2x Medium
+
+LINTING (flake8)
+  Erreurs : 3
+    - validator.py:12   E501 line too long
+    - validator.py:74   E501 line too long
+    - test_validator.py:9  E402 import not at top
+
+=======================================================
+ETAT FINAL
+=======================================================
+
+TESTS (pytest + coverage.py)
+  Tests passes   : 11/11 OK
+  Coverage       : 93%   OK
+    config.py    : 100%
+    validator.py :  96%
+    main.py      :  83%
+
+QUALITE (SonarQube)
+  sonar.python.version      : 3.11 configure OK
+  coverage.xml branche      : oui            OK
+
+SECURITE (Snyk)
+  Vulnerabilites : 0 OK
+  CVE identifies : 0 OK
+    requests  2.25.0  -> 2.33.0 OK
+    urllib3   1.26.20 -> 2.6.3  OK
+    idna      2.10    -> 3.13   OK
+
+LINTING (flake8)
+  Erreurs : 0 OK
+
+=======================================================
+RESUME DES CORRECTIONS
+=======================================================
+
+- Vulnerabilites Snyk corrigees (requests, urllib3, idna)
+- Flake8 E501 : lignes reformatees dans validator.py
+- Flake8 E402 : imports reorganises dans test_validator.py
+- Tests API ajoutes (test_main.py + httpx)
+- Coverage passe de 71% a 93%
+- Separation config / logique / API
+- Fonctions courtes, responsabilite unique
+- Docstrings PEP 257 completes
+
+RESULTAT FINAL : CONFORME
