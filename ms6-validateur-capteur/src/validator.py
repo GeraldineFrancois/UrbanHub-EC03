@@ -9,7 +9,7 @@ class SensorValidator:
     """Valide les mesures des capteurs urbains selon des seuils configurés."""
 
     def __init__(self) -> None:
-        """Initialise le validateur en chargeant les seuils depuis la config."""
+        """Initialise le validateur en chargeant les seuils."""
         self._thresholds = get_thresholds
 
     def validate(self, sensor: str, value: float) -> dict:
@@ -71,4 +71,8 @@ class SensorValidator:
     @staticmethod
     def _now_iso() -> str:
         """Retourne l'heure UTC courante au format ISO 8601."""
-        return datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
+        return (
+            datetime.datetime.now(datetime.timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )

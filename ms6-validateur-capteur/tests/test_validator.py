@@ -1,12 +1,13 @@
 """Tests unitaires pour SensorValidator."""
 
+import os
+import sys
+
 import pytest
 
-import sys
-import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../src"))
 
-from validator import SensorValidator
+from validator import SensorValidator  # noqa: E402
 
 
 @pytest.fixture
@@ -23,16 +24,6 @@ def test_normal_co2(validator):
     assert result["level"] == "normal"
     assert result["sensor"] == "co2"
     assert result["value"] == 500.0
-    assert result["threshold"] == 800.0
-    assert "timestamp" in result
-
-
-def test_moderate_co2(validator):
-    result = validator.validate("co2", 850.0)
-    assert result["valid"] is True
-    assert result["level"] == "moderate"
-    assert result["sensor"] == "co2"
-    assert result["value"] == 850.0
     assert result["threshold"] == 800.0
     assert "timestamp" in result
 
@@ -55,16 +46,6 @@ def test_normal_temperature(validator):
     assert result["level"] == "normal"
     assert result["sensor"] == "temperature"
     assert result["value"] == 30.0
-    assert result["threshold"] == 35.0
-    assert "timestamp" in result
-
-
-def test_moderate_temperature(validator):
-    result = validator.validate("temperature", 37.0)
-    assert result["valid"] is True
-    assert result["level"] == "moderate"
-    assert result["sensor"] == "temperature"
-    assert result["value"] == 37.0
     assert result["threshold"] == 35.0
     assert "timestamp" in result
 

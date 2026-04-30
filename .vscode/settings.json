@@ -1,3 +1,8 @@
 {
-    "snyk.advanced.autoSelectOrganization": true
+    "snyk.advanced.autoSelectOrganization": true,
+    "snyk.advanced.organization": "2f10d057-111d-4270-9660-785f8fc8a4f5",
+    "sonarlint.connectedMode.project": {
+      "connectionId": "geraldinefrancois",
+      "projectKey": "GeraldineFrancois_UrbanHub-EC03"
+    }
 }
